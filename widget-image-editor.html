@@ -1,0 +1,103 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../goc-styles/goc-styles.html">
+<link rel="import" href="../input-file/input-file.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../goc-icons/goc-icons.html">
+
+<dom-module id="widget-image-editor">
+  <template>
+    <style include="header-layout-styles">
+      :host {
+        display: block;
+      }
+
+      .header-layout__content {
+        padding: 20px 0;
+      }
+
+      .image-container {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+
+      .image-container__img {
+        width: 400px;
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+
+    <input-file id="inputFile" multiple="false" on-files-selected="_onFilesSelected" on-load="_onLoadFiles" style="display: none;"></input-file>
+
+    <div class="header-layout">
+      <div class="header-layout__header">
+        <div class="header-toolbar">
+          <a href="/presentation/[[presentationId]]">
+            <paper-icon-button icon="arrow-back"></paper-icon-button>
+          </a>
+          <div class="header-toolbar__main-content">
+            <div class="header-toolbar__title">[[customName]]</div>
+            <div class="header-toolbar__subtitle">Widget image</div>
+          </div>
+          <paper-icon-button on-tap="_deleteTapped" icon="delete"></paper-icon-button>
+          <paper-icon-button on-tap="_addPhotoTapped" icon="add-photo"></paper-icon-button>
+        </div>
+      </div>
+
+      <div class="header-layout__content">
+        <div class="image-container">
+          <img class="image-container__img" src="[[data.imageUrl]]" alt="">
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+(function() {
+  'use strict';
+
+  Polymer({
+
+    is: 'widget-image-editor',
+
+    properties: {
+
+      data: {
+        type: Object
+      },
+
+      presentationId: String,
+
+      customName: String
+
+    },
+
+    _onFilesSelected(event) {
+    },
+
+    _onLoadFiles(event) {
+      const file = event.detail.files[0];
+
+      if (file.urls) {
+        file.urls.then(urls => {
+          this.set('data.imageUrl', urls[0].url);
+          this.fire('widget-update');
+        });
+      }
+    },
+
+    _deleteTapped() {
+      this.set('data.imageUrl', '');
+      this.fire('widget-update');
+    },
+
+    _addPhotoTapped() {
+      this.$.inputFile.selectFiles();
+    },
+
+  });
+
+})();
+</script>

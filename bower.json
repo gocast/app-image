@@ -1,0 +1,16 @@
+{
+  "name": "widget-image",
+  "main": "widget-image.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "goc-styles": "git@github.com:gocast/goc-styles.git",
+    "goc-icons": "git@github.com:gocast/goc-icons.git",
+    "input-file": "git@github.com:sharedlabs/input-file.git"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}

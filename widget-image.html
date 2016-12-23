@@ -1,0 +1,40 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="widget-image">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .img {
+        width: 100%;
+        height: auto;
+      }
+    </style>
+
+    <img class="img" src="[[data.imageUrl]]" alt="">
+
+  </template>
+</dom-module>
+
+<script>
+(function() {
+  'use strict';
+
+  Polymer({
+
+    is: 'widget-image',
+
+    properties: {
+
+      data: {
+        type: Object
+      }
+
+    }
+
+  });
+
+})();
+</script>
