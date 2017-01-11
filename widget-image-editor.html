@@ -22,17 +22,6 @@
         padding: 20px;
       }
 
-      #spinner {
-        bottom: 0;
-        left: 0;
-        margin: auto;
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: 1;
-        --paper-spinner-color: var(--goc-primary-color);
-      }
-
       #inputFile {
         display: none;
       }
@@ -46,7 +35,6 @@
     <input-file
         id="inputFile"
         multiple="false"
-        on-files-selected="_onFilesSelected"
         on-load="_onLoadFiles"></input-file>
 
     <div class="header-layout">
@@ -60,21 +48,19 @@
             <div class="header-toolbar__subtitle">Widget image</div>
           </div>
 
+          <paper-spinner-lite class="header-layout__spinner" active="[[loading]]"></paper-spinner-lite>
           <paper-icon-button on-tap="_addPhotoTapped" icon="add-photo"></paper-icon-button>
         </div>
       </div>
 
       <div class="header-layout__content">
-        <paper-spinner-lite id="spinner" active="[[loading]]"></paper-spinner-lite>
         <iron-image
             id="ironImage"
-            preload
-            fade
-            src="[[data.imageUrl]]"
+            src="[[_imageUrl]]"
             sizing="contain"
-            placeholder="data:image/gif;base64,R0lGODlhAQABAPAAAP///////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
             loading="{{loading}}"
-            hidden$="[[!data.imageUrl]]">
+            hidden$="[[!data.imageUrl]]"
+            on-error-changed="_onIronImageErrorChanged">
         </iron-image>
 
         <template is="dom-if" if="[[!data.imageUrl]]">
@@ -108,22 +94,50 @@
 
       customName: String,
 
-      loading: Boolean
+      loading: Boolean,
+
+      _lastFile: Object,
+
+      _imageUrl: String
 
     },
 
-    _onFilesSelected(event) {
+    observers: [
+      '_dataChanged(data.imageUrl)'
+    ],
+
+    _dataChanged(imageUrl) {
+      if (imageUrl) {
+        this._imageUrl = imageUrl;
+      }
+    },
+
+    _onIronImageErrorChanged(event) {
+      const error = event.detail.value;
+
+      if (error && this._lastFile) {
+        this._imageUrl = URL.createObjectURL(this._lastFile);
+      }
     },
 
     _onLoadFiles(event) {
       const file = event.detail.files[0];
+      this._lastFile = file;
 
       if (file.urls) {
         file.urls.then(urls => {
           if (!this.data) {
             this.data = {};
           }
-          this.set('data.imageUrl', urls[0].url);
+
+          const biggerUrl = urls.sort((a,b) => {
+            if (a.width > a.height) {
+              return b.width - a.width;
+            }
+            return b.height - a.height;
+          })[0];
+
+          this.set('data.imageUrl', biggerUrl.url);
           this.fire('widget-update');
         });
       }
