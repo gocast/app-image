@@ -1,34 +1,53 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../goc-styles/goc-styles.html">
 <link rel="import" href="../input-file/input-file.html">
+<link rel="import" href="../paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../goc-icons/goc-icons.html">
 
 <dom-module id="widget-image-editor">
   <template>
-    <style include="header-layout-styles">
+    <style include="header-layout-styles missing-well-styles">
       :host {
         display: block;
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       .header-layout__content {
-        padding: 20px 0;
+        padding: 20px;
       }
 
-      .image-container {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
+      #spinner {
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 1;
+        --paper-spinner-color: var(--goc-primary-color);
       }
 
-      .image-container__img {
-        width: 400px;
-        max-width: 100%;
-        height: auto;
+      #inputFile {
+        display: none;
+      }
+
+      #ironImage {
+        width: 100%;
+        height: 100%;
       }
     </style>
 
-    <input-file id="inputFile" multiple="false" on-files-selected="_onFilesSelected" on-load="_onLoadFiles" style="display: none;"></input-file>
+    <input-file
+        id="inputFile"
+        multiple="false"
+        on-files-selected="_onFilesSelected"
+        on-load="_onLoadFiles"></input-file>
 
     <div class="header-layout">
       <div class="header-layout__header">
@@ -40,15 +59,29 @@
             <div class="header-toolbar__title">[[customName]]</div>
             <div class="header-toolbar__subtitle">Widget image</div>
           </div>
-          <paper-icon-button on-tap="_deleteTapped" icon="delete"></paper-icon-button>
+
           <paper-icon-button on-tap="_addPhotoTapped" icon="add-photo"></paper-icon-button>
         </div>
       </div>
 
       <div class="header-layout__content">
-        <div class="image-container">
-          <img class="image-container__img" src="[[data.imageUrl]]" alt="">
-        </div>
+        <paper-spinner-lite id="spinner" active="[[loading]]"></paper-spinner-lite>
+        <iron-image
+            id="ironImage"
+            preload
+            fade
+            src="[[data.imageUrl]]"
+            sizing="contain"
+            placeholder="data:image/gif;base64,R0lGODlhAQABAPAAAP///////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="
+            loading="{{loading}}"
+            hidden$="[[!data.imageUrl]]">
+        </iron-image>
+
+        <template is="dom-if" if="[[!data.imageUrl]]">
+          <div class="missing-well">
+            <div class="missing-well__title">No has subido ninguna imagen</div>
+          </div>
+        </template>
       </div>
     </div>
   </template>
@@ -65,12 +98,17 @@
     properties: {
 
       data: {
-        type: Object
+        type: Object,
+        value: _ => {
+          return {};
+        }
       },
 
       presentationId: String,
 
-      customName: String
+      customName: String,
+
+      loading: Boolean
 
     },
 
@@ -82,15 +120,13 @@
 
       if (file.urls) {
         file.urls.then(urls => {
+          if (!this.data) {
+            this.data = {};
+          }
           this.set('data.imageUrl', urls[0].url);
           this.fire('widget-update');
         });
       }
-    },
-
-    _deleteTapped() {
-      this.set('data.imageUrl', '');
-      this.fire('widget-update');
     },
 
     _addPhotoTapped() {

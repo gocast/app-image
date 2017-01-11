@@ -5,7 +5,9 @@
     "polymer": "Polymer/polymer#^1.4.0",
     "goc-styles": "git@github.com:gocast/goc-styles.git",
     "goc-icons": "git@github.com:gocast/goc-icons.git",
-    "input-file": "git@github.com:sharedlabs/input-file.git"
+    "input-file": "git@github.com:sharedlabs/input-file.git",
+    "iron-image": "PolymerElements/iron-image#^1.2.5",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

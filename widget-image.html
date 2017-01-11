@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-image/iron-image.html">
 
 <dom-module id="widget-image">
   <template>
@@ -7,13 +8,18 @@
         display: block;
       }
 
-      .img {
+      #ironImage {
         width: 100%;
-        height: auto;
+        height: 100%;
       }
     </style>
 
-    <img class="img" src="[[data.imageUrl]]" alt="">
+    <iron-image
+        id="ironImage"
+        src$="[[data.imageUrl]]"
+        sizing="contain"
+        preload
+        fade></iron-image>
 
   </template>
 </dom-module>
@@ -28,9 +34,7 @@
 
     properties: {
 
-      data: {
-        type: Object
-      }
+      data: Object
 
     }
 
