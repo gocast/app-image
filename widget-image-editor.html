@@ -90,7 +90,13 @@
         }
       },
 
-      presentationId: String,
+      release: Object,
+
+      widgetId: Number,
+
+      dataUpdatedAt: Number,
+
+      releaseUpdatedAt: Number,
 
       customName: String,
 
@@ -138,7 +144,12 @@
           })[0];
 
           this.set('data.imageUrl', biggerUrl.url);
-          this.fire('widget-update');
+          this.fire('widget-update', {
+            data: this.data,
+            widgetId: this.widgetId,
+            // directly to channel release
+            updateRelease: true,
+          });
         });
       }
     },
