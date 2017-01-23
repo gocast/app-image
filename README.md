@@ -1,4 +1,5 @@
-# \<widget-image\>
+# \<app-image-editor\>
+# \<app-image-player\>
 
 
 

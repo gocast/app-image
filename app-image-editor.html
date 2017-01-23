@@ -7,7 +7,7 @@
 <link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../goc-icons/goc-icons.html">
 
-<dom-module id="widget-image-editor">
+<dom-module id="app-image-editor">
   <template>
     <style include="header-layout-styles missing-well-styles">
       :host {
@@ -79,7 +79,7 @@
 
   Polymer({
 
-    is: 'widget-image-editor',
+    is: 'app-image-editor',
 
     properties: {
 
@@ -92,7 +92,7 @@
 
       release: Object,
 
-      widgetId: Number,
+      contentId: Number,
 
       dataUpdatedAt: Number,
 
@@ -144,9 +144,9 @@
           })[0];
 
           this.set('data.imageUrl', biggerUrl.url);
-          this.fire('widget-update', {
+          this.fire('content-update', {
             data: this.data,
-            widgetId: this.widgetId,
+            contentId: this.contentId,
             // directly to channel release
             updateRelease: true,
           });

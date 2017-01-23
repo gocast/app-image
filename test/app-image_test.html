@@ -2,28 +2,28 @@
 
 <html>
   <head>
-    <title>widget-image test</title>
+    <title>app-image-player test</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
-    <link rel="import" href="../widget-image.html">
+    <link rel="import" href="../app-image-player.html">
   </head>
   <body>
 
     <test-fixture id="basic">
       <template>
-        <widget-image></widget-image>
+        <app-image-player></app-image-player>
       </template>
     </test-fixture>
 
     <script>
-      suite('widget-image', function() {
+      suite('app-image-player', function() {
 
         test('instantiating the element works', function() {
           let element = fixture('basic');
-          assert.equal(element.is, 'widget-image');
+          assert.equal(element.is, 'app-image-player');
         });
 
       });

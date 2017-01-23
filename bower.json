@@ -1,6 +1,6 @@
 {
-  "name": "widget-image",
-  "main": "widget-image.html",
+  "name": "app-image",
+  "main": "app-image.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "goc-styles": "git@github.com:gocast/goc-styles.git",
