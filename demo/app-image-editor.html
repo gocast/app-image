@@ -1,12 +1,12 @@
 <!doctype html>
 <html>
   <head>
-    <title>app-image-editor demo</title>
+    <title>app-image demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../app-image-editor.html">
+    <link rel="import" href="../app-image.html">
 
     <style is="custom-style">
       body {
@@ -19,12 +19,12 @@
   </head>
   <body>
 
-    <app-image-editor custom-name="Test app"></app-image-editor>
+    <app-image custom-name="Test app"></app-image>
 
     <script>
 
     window.onload = _ => {
-      document.querySelector('app-image-editor').data = {
+      document.querySelector('app-image').data = {
         imageUrl: 'http://www.castles.org/images/sd2_small.jpg'
       };
     }

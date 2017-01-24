@@ -1,4 +1,4 @@
-# \<app-image-editor\>
+# \<app-image\>
 # \<app-image-player\>
 
 
