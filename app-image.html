@@ -1,15 +1,18 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../app-localize-mixin/app-localize-mixin.html">
+<link rel="import" href="../goc-apps/goc-app-icon.html">
+<link rel="import" href="../goc-apps/goc-apps-collection.html">
+<link rel="import" href="../goc-icons/goc-icons.html">
 <link rel="import" href="../goc-styles/goc-styles.html">
-<link rel="import" href="../input-file/input-file.html">
 <link rel="import" href="../paper-spinner/paper-spinner-lite.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../input-file/input-file.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-image/iron-image.html">
-<link rel="import" href="../goc-icons/goc-icons.html">
 
 <dom-module id="app-image">
   <template>
-    <style include="header-layout-styles missing-well-styles">
+    <style include="header-layout-styles icon-btn-styles missing-well-styles">
       :host {
         display: block;
       }
@@ -35,19 +38,39 @@
     <input-file
         id="inputFile"
         multiple="false"
-        on-load="_onLoadFiles"></input-file>
+        on-files-selected="_onFileSelected"
+        on-files-loaded="_onFileLoaded"></input-file>
+
+    <goc-apps-collection
+        app-name="image"
+        item="{{appInfo}}"
+        language="[[language]]"></goc-apps-collection>
 
     <div class="header-layout">
       <div class="header-layout__header">
         <div class="header-toolbar">
-          <paper-icon-button icon="arrow-back" on-tap="_arrowBackTapped" title="Back"></paper-icon-button>
+          <button
+              class="icon-btn icon-btn--primary"
+              on-click="_onBackTapped"
+              title="[[localize('EditorPage.Header.BackButton')]]">
+              <iron-icon icon="arrow-back"></iron-icon>
+          </button>
+
+          <goc-app-icon size="small" app-name="news-marquee"></goc-app-icon>
+
           <div class="header-toolbar__main-content">
             <div class="header-toolbar__title">[[contentName]]</div>
-            <div class="header-toolbar__subtitle">Image</div>
+            <div class="header-toolbar__subtitle">[[appInfo.displayName]]</div>
           </div>
 
           <paper-spinner-lite class="header-layout__spinner" active="[[loading]]"></paper-spinner-lite>
-          <paper-icon-button on-tap="_addPhotoTapped" icon="add-photo"></paper-icon-button>
+
+          <button
+              class="icon-btn icon-btn--primary"
+              on-click="_onAddPhotoTapped"
+              title="[[localize('EditorPage.Header.AddButton')]]">
+              <iron-icon icon="add-photo"></iron-icon>
+          </button>
         </div>
       </div>
 
@@ -57,110 +80,149 @@
             src="[[_imageUrl]]"
             sizing="contain"
             loading="{{loading}}"
-            hidden$="[[!data.imageUrl]]"
+            hidden$="[[!_imageUrl]]"
             on-error-changed="_onIronImageErrorChanged">
         </iron-image>
 
-        <template is="dom-if" if="[[!data.imageUrl]]">
-          <div class="missing-well">
-            <div class="missing-well__title">No has subido ninguna imagen</div>
-          </div>
-        </template>
+        <dom-if if="[[!_imageUrl]]">
+          <template>
+            <div class="missing-well">
+              <div class="missing-well__title">[[localize('EditorPage.List.Empty.Title')]]</div>
+            </div>
+          </template>
+        </dom-if>
       </div>
     </div>
   </template>
-</dom-module>
 
-<script>
-(function() {
-  'use strict';
+  <script>
 
-  Polymer({
+    class AppImage extends AppLocalizeMixin(Polymer.Element) {
 
-    is: 'app-image',
+      static get is() {return 'app-image';}
 
-    properties: {
+      static get config() {
+        return {
+          properties: {
 
-      data: {
-        type: Object,
-        value: _ => {
-          return {};
+            data: {
+              type: Object,
+              value: _ => {
+                return {};
+              },
+              observer: '_dataChanged'
+            },
+
+            release: Object,
+
+            contentId: Number,
+
+            dataUpdatedAt: Number,
+
+            releaseUpdatedAt: Number,
+
+            contentName: String,
+
+            loading: {
+              type: Boolean,
+              value: false
+            },
+
+            language: {
+              type: String,
+              value: _ => 'en'
+            },
+
+            resources: {
+              type: Object,
+              value() {
+                return {
+                  en: {
+                    'EditorPage.Header.AddButton': 'Upload image',
+                    'EditorPage.Header.BackButton': 'Back',
+                    'EditorPage.List.Empty.Title': 'Upload an image by clicking on the top right button',
+                  },
+
+                  es: {
+                    'EditorPage.Header.AddButton': 'Subir imagen',
+                    'EditorPage.Header.BackButton': 'Atrás',
+                    'EditorPage.List.Empty.Title': 'Para subir una imagen haz click en el botón de la esquina superior derecha',
+                  }
+                };
+              }
+            },
+
+            _imageUrl: String
+
+          }
+        };
+      }
+
+      constructor() {
+        super();
+        this._lastFile = null;
+      }
+
+      _dataChanged(data) {
+        this._updateImage();
+      }
+
+      _onAddPhotoTapped() {
+        this.$.inputFile.selectFiles();
+      }
+
+      _onBackTapped() {
+        this.dispatchEvent(new Event('close-app', {composed: true}));
+      }
+
+      _onIronImageErrorChanged(event) {
+        const error = event.detail.value;
+
+        if (error && this._lastFile) {
+          this._imageUrl = URL.createObjectURL(this._lastFile);
         }
-      },
-
-      release: Object,
-
-      contentId: Number,
-
-      dataUpdatedAt: Number,
-
-      releaseUpdatedAt: Number,
-
-      contentName: String,
-
-      loading: Boolean,
-
-      _lastFile: Object,
-
-      _imageUrl: String
-
-    },
-
-    observers: [
-      '_dataChanged(data.imageUrl)'
-    ],
-
-    _dataChanged(imageUrl) {
-      if (imageUrl) {
-        this._imageUrl = imageUrl;
       }
-    },
 
-    _onIronImageErrorChanged(event) {
-      const error = event.detail.value;
-
-      if (error && this._lastFile) {
-        this._imageUrl = URL.createObjectURL(this._lastFile);
+      _onFileSelected(event) {
+        this.loading = true;
       }
-    },
 
-    _onLoadFiles(event) {
-      const file = event.detail.files[0];
-      this._lastFile = file;
+      _onFileLoaded(event) {
+        const file = event.detail.files[0];
+        this._lastFile = file;
 
-      if (file.urls) {
-        file.urls.then(urls => {
+        if (file.images) {
           if (!this.data) {
             this.data = {};
           }
 
-          const biggerUrl = urls.sort((a,b) => {
-            if (a.width > a.height) {
-              return b.width - a.width;
-            }
-            return b.height - a.height;
-          })[0];
+          this.data.imageUrl = file.images[0].url;
+          this._updateImage();
+          this._notifyContentUpdate();
+        }
+      }
 
-          this.set('data.imageUrl', biggerUrl.url);
-          this.fire('content-update', {
+      _updateImage() {
+        if (this.data) {
+          this._imageUrl = this.data.imageUrl || false;
+        }
+      }
+
+      _notifyContentUpdate() {
+        this.dispatchEvent(new Event('content-update', {
+          composed: true,
+          detail: {
             data: this.data,
             contentId: this.contentId,
             // directly to channel release
             updateRelease: true,
-          });
-        });
+          }
+        }));
       }
-    },
 
-    _addPhotoTapped() {
-      this.$.inputFile.selectFiles();
-    },
+    }
 
-    _arrowBackTapped() {
-      this.fire('close-app');
-    },
+    customElements.define(AppImage.is, AppImage);
 
-  });
-
-})();
-</script>
+  </script>
+</dom-module>

@@ -1,4 +1,4 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-image/iron-image.html">
 
 <dom-module id="app-image-player">
@@ -22,23 +22,25 @@
         fade></iron-image>
 
   </template>
-</dom-module>
 
-<script>
-(function() {
-  'use strict';
+  <script>
 
-  Polymer({
+    class AppImagePlayer extends Polymer.Element {
 
-    is: 'app-image-player',
+      static get is() {return 'app-image-player';}
 
-    properties: {
+      static get config() {
+        return {
+          properties: {
 
-      data: Object
+            data: Object
 
+          }
+        };
+      }
     }
 
-  });
+    customElements.define(AppImagePlayer.is, AppImagePlayer);
 
-})();
-</script>
+  </script>
+</dom-module>

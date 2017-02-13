@@ -1,29 +1,26 @@
 <!doctype html>
-<html>
+
+<html lang="en">
   <head>
-    <title>app-image-player demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+    <title>App image demo</title>
+
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../app-image.html">
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
-    <link rel="import" href="../app-image-player.html">
-
-    <style is="custom-style" include="demo-pages-shared-styles">
+    <style>
+      body {
+        font-family: sans-serif;
+        height: 100vh;
+        margin: 0;
+      }
     </style>
   </head>
   <body>
 
-    <div class="vertical-section-container centered">
-      <h3>Basic app-image-player Demo</h3>
-      <demo-snippet>
-        <template>
-          <app-image-player></app-image-player>
-        </template>
-      </demo-snippet>
-    </div>
+    <app-image content-name="My image content"></app-image>
 
   </body>
 </html>
