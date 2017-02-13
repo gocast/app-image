@@ -77,14 +77,14 @@
       <div class="header-layout__content">
         <iron-image
             id="ironImage"
+            loading="{{_imageLoading}}"
             src="[[_imageUrl]]"
             sizing="contain"
-            loading="{{loading}}"
             hidden$="[[!_imageUrl]]"
             on-error-changed="_onIronImageErrorChanged">
         </iron-image>
 
-        <dom-if if="[[!_imageUrl]]">
+        <dom-if if="[[_computeMissingWellVisible(loading, _imageLoading, data)]]">
           <template>
             <div class="missing-well">
               <div class="missing-well__title">[[localize('EditorPage.List.Empty.Title')]]</div>
@@ -209,7 +209,7 @@
       }
 
       _notifyContentUpdate() {
-        this.dispatchEvent(new Event('content-update', {
+        this.dispatchEvent(new CustomEvent('content-update', {
           composed: true,
           detail: {
             data: this.data,
@@ -218,6 +218,10 @@
             updateRelease: true,
           }
         }));
+      }
+
+      _computeMissingWellVisible(loading, imageLoading, data) {
+        return !loading && !imageLoading && data && !data.imageUrl;
       }
 
     }
