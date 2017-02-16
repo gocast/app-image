@@ -12,7 +12,7 @@
 
 <dom-module id="app-image">
   <template>
-    <style include="header-layout-styles icon-btn-styles missing-well-styles">
+    <style include="header-layout-styles btn-styles icon-btn-styles missing-well-styles">
       :host {
         display: block;
       }
@@ -53,7 +53,7 @@
               class="icon-btn icon-btn--primary"
               on-click="_onBackTapped"
               title="[[localize('EditorPage.Header.BackButton')]]">
-              <iron-icon icon="arrow-back"></iron-icon>
+              <touch-item><iron-icon icon="arrow-back"></iron-icon></touch-item>
           </button>
 
           <goc-app-icon size="small" app-name="image"></goc-app-icon>
@@ -69,7 +69,7 @@
               class="icon-btn icon-btn--primary"
               on-click="_onAddPhotoTapped"
               title="[[localize('EditorPage.Header.AddButton')]]">
-              <iron-icon icon="add-photo"></iron-icon>
+              <touch-item><iron-icon icon="add-photo"></iron-icon></touch-item>
           </button>
         </div>
       </div>
