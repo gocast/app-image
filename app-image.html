@@ -107,9 +107,6 @@
 
             data: {
               type: Object,
-              value: _ => {
-                return {};
-              },
               observer: '_dataChanged'
             },
 
@@ -164,6 +161,9 @@
       }
 
       _dataChanged(data) {
+        if (!data) {
+          this.data = {};
+        }
         this._updateImage();
       }
 
