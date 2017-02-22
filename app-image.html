@@ -148,14 +148,14 @@
             <div class="form">
 
               <div class="form__item form__item--last">
-                <div class="form__label">Background[[localize('Style.BackgroundColor')]]</div>
+                <div class="form__label">[[localize('Options.BackgroundColor.Label')]]</div>
                 <color-input class="form__input-container">
                   <input
                       name="backgroundColor"
                       class="form__input"
                       value="[[data.backgroundColor]]"
                       on-keyup="_backgroundColorChanged"
-                      placeholder$="Use rgb[[localize('Style.BackgroundColor.Placeholder')]]">
+                      placeholder$="[[localize('Options.BackgroundColor.Placeholder')]]">
                 </color-input>
               </div>
 
@@ -222,12 +222,16 @@
                     'EditorPage.Header.AddButton': 'Upload image',
                     'EditorPage.Header.BackButton': 'Back',
                     'EditorPage.List.Empty.Title': 'Upload an image by clicking on the top right button',
+                    'Options.BackgroundColor.Label': 'Fill background',
+                    'Options.BackgroundColor.Placeholder': 'hex, rgb, rgba or color name',
                   },
 
                   es: {
                     'EditorPage.Header.AddButton': 'Subir imagen',
                     'EditorPage.Header.BackButton': 'Atrás',
                     'EditorPage.List.Empty.Title': 'Para subir una imagen haz click en el botón de la esquina superior derecha',
+                    'Options.BackgroundColor.Label': 'Fondo de relleno',
+                    'Options.BackgroundColor.Placeholder': 'hex, rgb, rgba o nombre del color',
                   }
                 };
               }
