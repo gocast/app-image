@@ -35,9 +35,19 @@
 
             data: Object
 
-          }
+          },
+
+          observers: [
+            '_backgroundColorChanged(data.backgroundColor)',
+          ]
+
         };
       }
+
+      _backgroundColorChanged(backgroundColor) {
+        this.style.backgroundColor = backgroundColor || 'transparent';
+      }
+
     }
 
     customElements.define(AppImagePlayer.is, AppImagePlayer);

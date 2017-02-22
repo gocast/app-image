@@ -12,7 +12,7 @@
 
 <dom-module id="app-image">
   <template>
-    <style include="header-layout-styles btn-styles icon-btn-styles missing-well-styles">
+    <style include="header-layout-styles btn-styles icon-btn-styles missing-well-styles box-styles form-styles">
       :host {
         display: block;
       }
@@ -25,12 +25,59 @@
         padding: 20px;
       }
 
+      .col {
+        margin-bottom: 30px;
+      }
+
+      @media(min-width: 640px) {
+        .header-layout__content {
+          @apply --layout-horizontal;
+        }
+
+        .col {
+          @apply --layout-flex;
+          margin-bottom: 0;
+          margin-right: 30px;
+        }
+
+        .col--last {
+          margin-right: 0;
+        }
+      }
+
       #inputFile {
         display: none;
       }
 
+      /* preview */
+      .preview-container {
+        border-radius: 3px;
+        border: 1px solid var(--paper-grey-400);
+        box-sizing: border-box;
+        height: 322px;
+      }
+
+      @media(max-width: 640px) {
+        .preview-container {
+          border-left: none;
+          border-radius: 0;
+          border-right: none;
+        }
+      }
+
       #ironImage {
         width: 100%;
+        height: 100%;
+      }
+
+      /**
+       * Different from the default .missing-well because we want it in the
+       * vertical middle of preview
+       */
+      .missing-well-img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 100%;
       }
     </style>
@@ -75,22 +122,47 @@
       </div>
 
       <div class="header-layout__content">
-        <iron-image
-            id="ironImage"
-            loading="{{_imageLoading}}"
-            src="[[_imageUrl]]"
-            sizing="contain"
-            hidden$="[[!_imageUrl]]"
-            on-error-changed="_onIronImageErrorChanged">
-        </iron-image>
+        <div class="col">
+          <div class="preview-container" style$="[[_computePreviewBackgrond(data.backgroundColor)]]">
+            <dom-if if="[[_computeMissingWellVisible(loading, _imageLoading, data)]]">
+              <template>
+                <div class="missing-well-img">
+                  <div class="missing-well__title">[[localize('EditorPage.List.Empty.Title')]]</div>
+                </div>
+              </template>
+            </dom-if>
 
-        <dom-if if="[[_computeMissingWellVisible(loading, _imageLoading, data)]]">
-          <template>
-            <div class="missing-well">
-              <div class="missing-well__title">[[localize('EditorPage.List.Empty.Title')]]</div>
+            <iron-image
+                id="ironImage"
+                loading="{{_imageLoading}}"
+                src="[[_imageUrl]]"
+                sizing="contain"
+                hidden$="[[!_imageUrl]]"
+                on-error-changed="_onIronImageErrorChanged">
+            </iron-image>
+          </div>
+        </div>
+
+        <div class="col col--last">
+          <div class="box">
+            <div class="form">
+
+              <div class="form__item form__item--last">
+                <div class="form__label">Background[[localize('Style.BackgroundColor')]]</div>
+                <color-input class="form__input-container">
+                  <input
+                      name="backgroundColor"
+                      class="form__input"
+                      value="[[data.backgroundColor]]"
+                      on-keyup="_backgroundColorChanged"
+                      placeholder$="Use rgb[[localize('Style.BackgroundColor.Placeholder')]]">
+                </color-input>
+              </div>
+
             </div>
-          </template>
-        </dom-if>
+          </div>
+        </div>
+
       </div>
     </div>
   </template>
@@ -104,6 +176,16 @@
       static get config() {
         return {
           properties: {
+
+            _defaultData: {
+              type: Object,
+              value: _ => {
+                return {
+                  backgroundColor: '',
+                  imageUrl: '',
+                };
+              },
+            },
 
             data: {
               type: Object,
@@ -119,6 +201,8 @@
             releaseUpdatedAt: Number,
 
             contentName: String,
+
+            visible: Boolean,
 
             loading: {
               type: Boolean,
@@ -151,7 +235,11 @@
 
             _imageUrl: String
 
-          }
+          },
+
+          observers: [
+            '_dataChanged(data, visible)'
+          ]
         };
       }
 
@@ -160,11 +248,26 @@
         this._lastFile = null;
       }
 
-      _dataChanged(data) {
-        if (!data) {
-          this.data = {};
+      _dataChanged(data, visible) {
+        if (!visible) {return;}
+
+        // Initialize data.
+        if (data === null) {
+          this.data = Object.assign({}, this._defaultData);
         }
         this._updateImage();
+      }
+
+      _backgroundColorChanged() {
+        const input = this.root.querySelector('input[name=backgroundColor]');
+        const backgroundColor = input.value;
+        const isValid = !backgroundColor || this._isColorValid(backgroundColor);
+        const hasChanged = this.data.backgroundColor !== backgroundColor;
+
+        if (isValid && hasChanged) {
+          this.set('data.backgroundColor', backgroundColor);
+          this._notifyContentUpdate();
+        }
       }
 
       _onAddPhotoTapped() {
@@ -222,6 +325,19 @@
 
       _computeMissingWellVisible(loading, imageLoading, data) {
         return !loading && !imageLoading && data && !data.imageUrl;
+      }
+
+      _computePreviewBackgrond(backgroundColor) {
+        if (backgroundColor) {
+          return `background: ${backgroundColor}`;
+        }
+        return `background: linear-gradient(to right, rgba(0,0,0,0), transparent), url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAADNJREFUOBFjvHHjxn8GPEBDQ4MRjzQDEz5JYuRGDWAYBIGIN45B0UgonYxG42CIRopjAQAbjQemQaw2YQAAAABJRU5ErkJggg==')`;
+      }
+
+      _isColorValid(color) {
+        const el = document.createElement('div');
+        el.style.backgroundColor = color;
+        return Boolean(el.style.backgroundColor);
       }
 
     }
