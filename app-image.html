@@ -174,78 +174,76 @@
 
       static get is() {return 'app-image';}
 
-      static get config() {
+      static get properties() {
         return {
-          properties: {
-
-            _defaultData: {
-              type: Object,
-              value: _ => {
-                return {
-                  backgroundColor: '',
-                  imageUrl: '',
-                };
-              },
+          _defaultData: {
+            type: Object,
+            value: _ => {
+              return {
+                backgroundColor: '',
+                imageUrl: '',
+              };
             },
-
-            data: {
-              type: Object,
-              observer: '_dataChanged'
-            },
-
-            release: Object,
-
-            contentId: Number,
-
-            dataUpdatedAt: Number,
-
-            releaseUpdatedAt: Number,
-
-            contentName: String,
-
-            visible: Boolean,
-
-            loading: {
-              type: Boolean,
-              value: false
-            },
-
-            language: {
-              type: String,
-              value: _ => 'en'
-            },
-
-            resources: {
-              type: Object,
-              value() {
-                return {
-                  en: {
-                    'EditorPage.Header.AddButton': 'Upload image',
-                    'EditorPage.Header.BackButton': 'Back',
-                    'EditorPage.List.Empty.Title': 'Upload an image by clicking on the top right button',
-                    'Options.BackgroundColor.Label': 'Fill background',
-                    'Options.BackgroundColor.Placeholder': 'hex, rgb, rgba or color name',
-                  },
-
-                  es: {
-                    'EditorPage.Header.AddButton': 'Subir imagen',
-                    'EditorPage.Header.BackButton': 'Atrás',
-                    'EditorPage.List.Empty.Title': 'Para subir una imagen haz click en el botón de la esquina superior derecha',
-                    'Options.BackgroundColor.Label': 'Fondo de relleno',
-                    'Options.BackgroundColor.Placeholder': 'hex, rgb, rgba o nombre del color',
-                  }
-                };
-              }
-            },
-
-            _imageUrl: String
-
           },
 
-          observers: [
-            '_dataChanged(data, visible)'
-          ]
+          data: {
+            type: Object,
+            observer: '_dataChanged'
+          },
+
+          release: Object,
+
+          contentId: Number,
+
+          dataUpdatedAt: Number,
+
+          releaseUpdatedAt: Number,
+
+          contentName: String,
+
+          visible: Boolean,
+
+          loading: {
+            type: Boolean,
+            value: false
+          },
+
+          language: {
+            type: String,
+            value: _ => 'en'
+          },
+
+          resources: {
+            type: Object,
+            value() {
+              return {
+                en: {
+                  'EditorPage.Header.AddButton': 'Upload image',
+                  'EditorPage.Header.BackButton': 'Back',
+                  'EditorPage.List.Empty.Title': 'Upload an image by clicking on the top right button',
+                  'Options.BackgroundColor.Label': 'Fill background',
+                  'Options.BackgroundColor.Placeholder': 'hex, rgb, rgba or color name',
+                },
+
+                es: {
+                  'EditorPage.Header.AddButton': 'Subir imagen',
+                  'EditorPage.Header.BackButton': 'Atrás',
+                  'EditorPage.List.Empty.Title': 'Para subir una imagen haz click en el botón de la esquina superior derecha',
+                  'Options.BackgroundColor.Label': 'Fondo de relleno',
+                  'Options.BackgroundColor.Placeholder': 'hex, rgb, rgba o nombre del color',
+                }
+              };
+            }
+          },
+
+          _imageUrl: String
         };
+      }
+
+      static get observers() {
+        return [
+          '_dataChanged(data, visible)'
+        ];
       }
 
       constructor() {

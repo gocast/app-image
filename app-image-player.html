@@ -29,19 +29,16 @@
 
       static get is() {return 'app-image-player';}
 
-      static get config() {
+      static get properties() {
         return {
-          properties: {
-
-            data: Object
-
-          },
-
-          observers: [
-            '_backgroundColorChanged(data.backgroundColor)',
-          ]
-
+          data: Object,
         };
+      }
+
+      static get properties() {
+        return [
+          '_backgroundColorChanged(data.backgroundColor)',
+        ];
       }
 
       _backgroundColorChanged(backgroundColor) {
